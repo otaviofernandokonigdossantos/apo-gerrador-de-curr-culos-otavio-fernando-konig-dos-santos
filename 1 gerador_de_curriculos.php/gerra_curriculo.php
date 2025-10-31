@@ -46,12 +46,14 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
     h1 { border-bottom: 2px solid #000; }
     .section { margin-top: 20px; }
     .experiencia, .referencia, .formacao { margin-bottom: 10px; }
-    .printBtn, .backBtn { 
-        background: #4CAF50; color: white; padding: 10px 15px; 
+    .printBtn, .backBtn, .homeBtn { 
+        color: white; padding: 10px 15px; 
         border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;
         margin-right: 10px;
     }
+    .printBtn { background: #4CAF50; }
     .backBtn { background: #555; }
+    .homeBtn { background: #2196F3; }
     .campo { margin-bottom: 10px; }
     img.foto {
         max-width: 150px;
@@ -65,6 +67,8 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
 
 <?php if (!$formEnviado): ?>
 <!-- FORMULÁRIO -->
+<a href="tela_inicial.php"><button class="homeBtn">⬅ Voltar</button></a><br><br>
+
 <h1>Preencha seus dados</h1>
 <form method="post" action="" enctype="multipart/form-data">
     <div class="campo">
@@ -193,8 +197,9 @@ fotoInput.addEventListener('change', function() {
 
 <?php else: ?>
 <!-- CURRÍCULO GERADO -->
-<button class="printBtn" onclick="window.print();">📄 Baixar / Imprimir Currículo</button>
+<a href="tela_inicial.php"><button class="homeBtn">⬅ Voltar</button></a>
 <button class="backBtn" onclick="window.location.href='';">🔙 Voltar ao Início</button>
+<button class="printBtn" onclick="window.print();">📄 Baixar / Imprimir Currículo</button>
 
 <?php if ($fotoPath): ?>
     <img src="<?php echo htmlspecialchars($fotoPath); ?>" class="foto">
