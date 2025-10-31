@@ -25,15 +25,13 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
     $arquivoTmp = $_FILES['foto']['tmp_name'];
     $nomeArquivo = basename($_FILES['foto']['name']);
     $extensao = strtolower(pathinfo($nomeArquivo, PATHINFO_EXTENSION));
-    
+
     // Gera um nome único para evitar sobrescrever arquivos
     $novoNome = uniqid('foto_') . '.' . $extensao;
     $destino = $uploadDir . $novoNome;
-    
+
     if (move_uploaded_file($arquivoTmp, $destino)) {
         $fotoPath = $destino;
-    } else {
-        $fotoPath = '';
     }
 }
 ?>
@@ -47,7 +45,7 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
     body { font-family: Arial, sans-serif; margin: 40px; }
     h1 { border-bottom: 2px solid #000; }
     .section { margin-top: 20px; }
-    .experiencia, .referencia { margin-bottom: 10px; }
+    .experiencia, .referencia, .formacao { margin-bottom: 10px; }
     .printBtn, .backBtn { 
         background: #4CAF50; color: white; padding: 10px 15px; 
         border: none; border-radius: 4px; cursor: pointer; margin-bottom: 20px;
@@ -91,6 +89,17 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
         <input type="file" id="foto" name="foto" accept="image/*">
     </div>
 
+    <h3>Formação Acadêmica</h3>
+    <div id="formacoes">
+        <div class="campo">
+            <input type="text" name="grau[]" placeholder="Grau de Estudo (ex: Ensino Médio, Graduação)">
+            <input type="text" name="instituicao[]" placeholder="Instituição">
+            <input type="text" name="curso[]" placeholder="Curso">
+            <input type="text" name="ano_conclusao[]" placeholder="Ano de Conclusão">
+        </div>
+    </div>
+    <button type="button" onclick="addFormacao()">+ Adicionar Formação</button>
+
     <h3>Experiências Profissionais</h3>
     <div id="experiencias">
         <div class="campo">
@@ -101,6 +110,14 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
         </div>
     </div>
     <button type="button" onclick="addExperiencia()">+ Adicionar Experiência</button>
+
+    <h3>Habilidades</h3>
+    <div id="habilidades">
+        <div class="campo">
+            <input type="text" name="habilidade[]" placeholder="Digite uma habilidade (ex: Comunicação, Liderança)">
+        </div>
+    </div>
+    <button type="button" onclick="addHabilidade()">+ Adicionar Habilidade</button>
 
     <h3>Referências</h3>
     <div id="referencias">
@@ -117,6 +134,16 @@ if ($formEnviado && isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOA
 </form>
 
 <script>
+function addFormacao() {
+    const div = document.createElement('div');
+    div.className = 'campo';
+    div.innerHTML = '<input type="text" name="grau[]" placeholder="Grau de Estudo"> ' +
+                    '<input type="text" name="instituicao[]" placeholder="Instituição"> ' +
+                    '<input type="text" name="curso[]" placeholder="Curso"> ' +
+                    '<input type="text" name="ano_conclusao[]" placeholder="Ano de Conclusão">';
+    document.getElementById('formacoes').appendChild(div);
+}
+
 function addExperiencia() {
     const div = document.createElement('div');
     div.className = 'campo';
@@ -126,6 +153,14 @@ function addExperiencia() {
                     '<input type="date" name="data_de_encerramento[]" placeholder="Data de encerramento">';
     document.getElementById('experiencias').appendChild(div);
 }
+
+function addHabilidade() {
+    const div = document.createElement('div');
+    div.className = 'campo';
+    div.innerHTML = '<input type="text" name="habilidade[]" placeholder="Digite uma habilidade">';
+    document.getElementById('habilidades').appendChild(div);
+}
+
 function addReferencia() {
     const div = document.createElement('div');
     div.className = 'campo';
@@ -172,6 +207,22 @@ fotoInput.addEventListener('change', function() {
 <p><strong>Telefone:</strong> <?php echo htmlspecialchars($_POST['telefone']); ?></p>
 
 <div class="section">
+<h2>Formação Acadêmica</h2>
+<?php
+if (!empty($_POST['grau'])) {
+    for ($i = 0; $i < count($_POST['grau']); $i++) {
+        echo "<div class='formacao'>";
+        echo "<strong>Grau:</strong> " . htmlspecialchars($_POST['grau'][$i]) . "<br>";
+        echo "<strong>Instituição:</strong> " . htmlspecialchars($_POST['instituicao'][$i]) . "<br>";
+        echo "<strong>Curso:</strong> " . htmlspecialchars($_POST['curso'][$i]) . "<br>";
+        echo "<strong>Ano de Conclusão:</strong> " . htmlspecialchars($_POST['ano_conclusao'][$i]) . "<br>";
+        echo "</div>";
+    }
+}
+?>
+</div>
+
+<div class="section">
 <h2>Experiências Profissionais</h2>
 <?php
 if (!empty($_POST['empresa'])) {
@@ -185,6 +236,19 @@ if (!empty($_POST['empresa'])) {
     }
 }
 ?>
+</div>
+
+<div class="section">
+<h2>Habilidades</h2>
+<ul>
+<?php
+if (!empty($_POST['habilidade'])) {
+    foreach ($_POST['habilidade'] as $hab) {
+        echo "<li>" . htmlspecialchars($hab) . "</li>";
+    }
+}
+?>
+</ul>
 </div>
 
 <div class="section">
